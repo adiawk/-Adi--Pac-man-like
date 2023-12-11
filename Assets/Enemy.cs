@@ -7,6 +7,8 @@ public class Enemy : MonoBehaviour
 {
     BaseState currentState;
 
+    public Animator animator;
+
     public PatrolState PatrolState = new PatrolState();
     public ChaseState ChaseState = new ChaseState();
     public RetreatState RetreatState = new RetreatState();
@@ -25,6 +27,7 @@ public class Enemy : MonoBehaviour
         currentState.EnterState(this);
 
         navMeshAgent = GetComponent<NavMeshAgent>();
+        animator = GetComponent<Animator>();
     }
 
     private void Start()
@@ -60,5 +63,21 @@ public class Enemy : MonoBehaviour
     void StopRetreating()
     {
         SwitchState(PatrolState);
+    }
+
+    public void Dead()
+    {
+        Destroy(gameObject);
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(currentState != RetreatState)
+        {
+            if(collision.gameObject.CompareTag("Player"))
+            {
+                collision.gameObject.GetComponent<Player>().Dead();
+            }
+        }
     }
 }

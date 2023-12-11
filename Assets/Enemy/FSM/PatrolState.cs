@@ -12,6 +12,8 @@ public class PatrolState : BaseState
         Debug.Log("Start Patrol");
 
         isMoving = false;
+
+        enemy.animator.SetTrigger("Patrol");
     }
 
     public void UpdateState(Enemy enemy)

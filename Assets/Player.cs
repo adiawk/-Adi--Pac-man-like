@@ -1,15 +1,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     Rigidbody rb;
+    [SerializeField] int health = 3;
     [SerializeField] float speed;
     [SerializeField] Transform freelookCamera;
 
     [SerializeField] float powerUpDuration;
+    [SerializeField] Transform respawnPoint;
+    [SerializeField] TextMeshProUGUI textHealth;
+
+
+    bool isPowerUpActive;
 
     float horizontalAxis;
     float verticalAxis;
@@ -32,6 +39,8 @@ public class Player : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        UpdateUI();
     }
 
     // Update is called once per frame
@@ -51,6 +60,18 @@ public class Player : MonoBehaviour
         //Debug.Log($"Vertical: {verticalAxis}");
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(isPowerUpActive)
+        {
+            if (collision.gameObject.CompareTag("Enemy"))
+            {
+                collision.gameObject.GetComponent<Enemy>().Dead();
+            }
+        }
+        
+    }
+
     public void PickPowerUp()
     {
         Debug.Log("Pick Power UP");
@@ -64,10 +85,33 @@ public class Player : MonoBehaviour
     IEnumerator StartPowerUp()
     {
         Debug.Log("Start Power Up");
+        isPowerUpActive = true;
         OnPowerUpStart?.Invoke();
         yield return new WaitForSeconds(powerUpDuration);
         
         Debug.Log("Stop Power Up");
         OnPowerUpStop?.Invoke();
+        isPowerUpActive = false;
+    }
+
+    void UpdateUI()
+    {
+        textHealth.text = $"Health: {health}";
+    }
+
+    public void Dead()
+    {
+        health -= 1;
+        if(health > 0)
+        {
+            transform.position = respawnPoint.position;
+        }
+        else
+        {
+            health = 0;
+            Debug.Log("LOSE - PLAYER DEAD");
+        }
+
+        UpdateUI();
     }
 }
