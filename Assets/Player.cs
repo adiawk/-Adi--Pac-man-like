@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -79,6 +80,7 @@ public class Player : MonoBehaviour
         {
             StopCoroutine(powerUpCoroutine);
         }
+
         powerUpCoroutine = StartCoroutine(StartPowerUp());
     }
 
@@ -110,6 +112,7 @@ public class Player : MonoBehaviour
         {
             health = 0;
             Debug.Log("LOSE - PLAYER DEAD");
+            SceneManager.LoadScene("LoseScreen");
         }
 
         UpdateUI();

@@ -13,7 +13,12 @@ public class PatrolState : BaseState
 
         isMoving = false;
 
-        enemy.animator.SetTrigger("Patrol");
+        try
+        {
+            enemy.animator.SetTrigger("Patrol");
+        }
+        catch { };
+        
     }
 
     public void UpdateState(Enemy enemy)
